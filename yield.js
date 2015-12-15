@@ -7,32 +7,61 @@
     root.Yield = factory();
   }
 })(this, function() {
-	'use strict';
+  'use strict';
 
-	class Yield {
-		constructor (iter) {
-			this.iterable = iter;
-			this.maps = [];
+  class Yield {
+    constructor (iter) {
+      this.iterable = iter;
+    }
+
+    map (lambda) {
+      const that = this;
+      return new Yield(function* fn () {
+        for (let v of that.generator()) {
+          yield lambda(v);
+        }
+      });
 		}
 
-		map (lambda) {
-			this.maps.push(lambda);
-			return this;
+    filter (lambda) {
+      const that = this;
+      return new Yield(function* fn () {
+        let result;
+        for (let v of that.generator()) {
+            result = lambda(v);
+            if (result) { // Truthy values are accepted
+              yield v;
+            }
+        }
+      });
+    }
+
+    skip (num) {
+      const that = this;
+      return new Yield(function* fn () {
+        let skip = 0;
+        for (let v of that.generator()) {
+          if (++skip > num) {
+            yield v;
+          }
+        }
+      });
 		}
 
-		toArray () {
-			return [...this];
-		}
+    toArray () {
+      return [...this];
+    }
 
-		* [Symbol.iterator]() {
-			for(let v of this.iterable) {
-				for (let m of this.maps) {
-					v = m(v);
-				}
-				yield v;
-			}
-		}
-	}
+    generator () {
+      return typeof this.iterable === 'function' ? this.iterable() : this.iterable;
+    }
 
-	return function(iterable) { return new Yield(iterable); };
+    * [Symbol.iterator]() {
+      for(let v of this.generator()) {
+        yield v;
+      }
+    }
+  }
+
+  return function(iterable) { return new Yield(iterable); };
 });
