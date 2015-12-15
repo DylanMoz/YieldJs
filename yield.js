@@ -21,7 +21,7 @@
           yield lambda(v);
         }
       });
-		}
+    }
 
     filter (lambda) {
       const that = this;
@@ -38,15 +38,22 @@
 
     skip (num) {
       const that = this;
-      return new Yield(function* fn () {
-        let skip = 0;
-        for (let v of that.generator()) {
-          if (++skip > num) {
-            yield v;
+      let iterable = that.generator();
+      if (Util.isArray(iterable)) {
+        this.iterable = iterable.slice(num < 0 ? 0 : num);
+        return this;
+      } else {
+        return new Yield(function* fn () {
+          let skip = 0;
+          for (let v of iterable) {
+            if (++skip > num) {
+              yield v;
+            }
           }
-        }
-      });
-		}
+        });
+      }
+
+    }
 
     toArray () {
       return [...this];
@@ -56,10 +63,16 @@
       return typeof this.iterable === 'function' ? this.iterable() : this.iterable;
     }
 
-    * [Symbol.iterator]() {
+    * [Symbol.iterator] () {
       for(let v of this.generator()) {
         yield v;
       }
+    }
+  }
+
+  class Util {
+    static isArray (a) {
+      return a.constructor === Array;
     }
   }
 

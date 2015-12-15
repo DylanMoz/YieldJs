@@ -45,19 +45,6 @@ describe('Map', function() {
   });
 });
 
-describe('Map', function() {
-  it('should return the mapped results of the original array when calling toArray()', function () {
-
-    assert.deepEqual([1, 4, 9], Yield([1,2,3]).map(a => a * a).toArray());
-
-    assert.deepEqual([1, 16, 81], Yield([1,2,3]).map(a => a * a).map(a => a * a).toArray());
-
-    assert.deepEqual([9, 16, 25], Yield([1,2,3]).map(a => a + 2).map(a => a * a).toArray());
-
-    assert.deepEqual([3, 4, 1], Yield([1,2,3]).map(a => a + 2).map(a => a * a).map(a => a % 6).toArray());
-  });
-});
-
 describe('Filter', function() {
   it('should return the filtered results of the original array when calling toArray()', function () {
 
@@ -77,6 +64,7 @@ describe('Skip', function() {
     assert.deepEqual([], Yield([1,2,3,4,5,6,7,8,9,10]).skip(10).toArray());
 
     assert.deepEqual([], Yield([1,2,3,4,5,6,7,8,9,10]).skip(18).toArray());
+
     assert.deepEqual([1,2,3,4,5,6,7,8,9,10], Yield([1,2,3,4,5,6,7,8,9,10]).skip(0).toArray());
     assert.deepEqual([1,2,3,4,5,6,7,8,9,10], Yield([1,2,3,4,5,6,7,8,9,10]).skip(-5).toArray());
   });
