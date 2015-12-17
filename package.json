@@ -14,5 +14,9 @@
     "util"
   ],
   "author": "Dylan Mozlowski",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "benchmark": "^1.0.0",
+    "lazy.js": "^0.4.2"
+  }
 }

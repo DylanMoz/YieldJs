@@ -69,3 +69,22 @@ describe('Skip', function() {
     assert.deepEqual([1,2,3,4,5,6,7,8,9,10], Yield([1,2,3,4,5,6,7,8,9,10]).skip(-5).toArray());
   });
 });
+
+describe('Reverse', function() {
+  it('should reverse the order of an iterable', function () {
+
+    assert.deepEqual([10,9,8,7,6,5,4,3,2,1], Yield([1,2,3,4,5,6,7,8,9,10]).reverse().toArray());
+    assert.deepEqual([], Yield([]).reverse().toArray());
+  });
+});
+
+describe('Chunk', function() {
+  it('should break the iterable into equally sized arrays', function () {
+
+    assert.deepEqual([[1,2,3,4], [5,6,7,8], [9,10]], Yield([1,2,3,4,5,6,7,8,9,10]).chunk(4).toArray());
+
+    assert.deepEqual([], Yield([]).chunk(10).toArray());
+
+    assert.deepEqual([[1,2,3,4,5]], Yield([1,2,3,4,5]).chunk(18).toArray());
+  });
+});

@@ -23,6 +23,26 @@
       });
     }
 
+    chunk (size) {
+      const that = this;
+      return new Yield(function* fn () {
+        let chunk = size;
+        let res = [];
+        for (let v of that.generator()) {
+          if (chunk === 0) {
+            yield res;
+            res = [];
+            chunk = size;
+          }
+          res.push(v);
+          chunk--;
+        }
+        if (res.length !== 0) {
+          yield res;
+        }
+      });
+    }
+
     filter (lambda) {
       const that = this;
       return new Yield(function* fn () {
@@ -38,21 +58,25 @@
 
     skip (num) {
       const that = this;
-      let iterable = that.generator();
-      if (Util.isArray(iterable)) {
-        this.iterable = iterable.slice(num < 0 ? 0 : num);
-        return this;
-      } else {
-        return new Yield(function* fn () {
-          let skip = 0;
-          for (let v of iterable) {
-            if (++skip > num) {
-              yield v;
-            }
+      return new Yield(function* fn () {
+        let skip = 0;
+        for (let v of that.generator()) {
+          if (++skip > num) {
+            yield v;
           }
-        });
-      }
+        }
+      });
+    }
 
+    reverse () {
+      const that = this;
+      return new Yield(function* fn () {
+        const arr = [...that.iterable];
+        let i = arr.length - 1;
+        while (i >= 0) {
+          yield arr[i--];
+        }
+      });
     }
 
     toArray () {
